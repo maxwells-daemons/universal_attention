@@ -6,7 +6,7 @@ Written for the final project of Caltech's CNS186 (Vision) class.
 TODO: add images here.
 
 ## Intuition
-Some things are a lot more salient to humans than others, just by their visual characteristics (bright colors, sharp contrasts, ...). 
+Some things are a lot more salient to humans than others, just by their visual characteristics (bright colors, sharp contrasts, ...).
 It's often possible to pick out objects from background without knowing too much about the objects themselves.
 Therefore "universal attention" seems learnable.
 
@@ -14,15 +14,15 @@ Hopefully once the network has a good sense of where things are in an image, it 
 
 ## How it works
 I train a variant of ResNet50 with attention [(Jetley et al. 2018)](https://openreview.net/forum?id=HyzbhfWRW) and see what the model learns to focus on.
-In order (hopefully) to learn a broad notion of what's interesting in an image, we meta-train the network with Reptile [(Nichol et al. 2018)](https://openai.com/blog/reptile/) on six datasets:
+In order (hopefully) to learn a broad notion of what's interesting in an image, I meta-train the network with Reptile [(Nichol et al. 2018)](https://openai.com/blog/reptile/) on six datasets:
  - [ibean](https://github.com/AI-Lab-Makerere/ibean/)
  - [Caltech-UCSD Birds 200-2011](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html)
  - [Imagenette](https://github.com/fastai/imagenette)
  - [Stanford Dogs](http://vision.stanford.edu/aditya86/ImageNetDogs/main.html)
  - [Stanford-IIIT Pets](http://www.robots.ox.ac.uk/~vgg/data/pets/)
  - [Oxford Flowers 102](https://www.robots.ox.ac.uk/~vgg/data/flowers/102/)
- 
-Then, to see if knowing where things are helps the network learn what they are, we evaluate by transfer-learning the model to [Caltech101](http://www.vision.caltech.edu/Image_Datasets/Caltech101/).
+
+Then, to see if knowing where things are helps the network learn what they are, I evaluate by transfer-learning the model to [Caltech101](http://www.vision.caltech.edu/Image_Datasets/Caltech101/).
 
 ## Running the code
 The project can be run through the three executable scripts under `scripts/`:
