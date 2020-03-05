@@ -36,12 +36,17 @@ In order (hopefully) to learn a broad notion of what's interesting in an image, 
 Then, to see if knowing where things are helps the network learn what they are, I evaluate by transfer-learning the model to [Caltech101](http://www.vision.caltech.edu/Image_Datasets/Caltech101/).
 
 ## Running the code
-The project can be run through the three executable scripts under `scripts/`:
+This project manages dependencies through [Pipenv](https://github.com/pypa/pipenv).
+To install dependencies, run `pipenv install` from the project directory.
+
+Then, the project can be operated through the three executable scripts under `scripts/`:
  - `run_reptile_experiment.py` runs a single experiment with manually picked hyperparameters.
  - `train_target.py` evaluates an existing checkpoint on the target task (Caltech101).
  - `hyperopt_attention.py` runs hyperparameter optimization code using [Hyperopt](https://github.com/hyperopt/hyperopt).
 
-All three scripts are configured with command-line flags; run `scripts/something.py --helpfull` to see the full list.
+Scripts are run through Pipenv like `pipenv run python scripts/some_script.py --run_name=my_run --other_flag=something_else`.
+
+All three scripts are configured with command-line flags; run `scripts/some_script.py --helpfull` to see the full list.
 They dump their logs in `--tb_log_dir` (default: outputs/logs) and checkpoints in `--checkpoint_dir` (default: outputs/checkpoints).
 
 ## Project structure
