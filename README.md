@@ -3,7 +3,18 @@ I was curious to see whether neural networks could learn _task-independent_ visu
 This repository contains the code for models and experiments I used to play around with this idea.
 Written for the final project of Caltech's CNS186 (Vision) class.
 
-TODO: add images here.
+<div class="row">
+<img src="./images/attention_binoculars.png" width=200>
+<img src="./images/attention_bird.png" width=200>
+<img src="./images/attention_cat.png" width=200>
+<img src="./images/attention_dog_1.png" width=200>
+</div>
+<div class="row">
+<img src="./images/attention_dog_2.png" width=200>
+<img src="./images/attention_duck.png" width=200>
+<img src="./images/attention_flower.png" width=200>
+<img src="./images/attention_scissors.png" width=200>
+</div>
 
 ## Intuition
 Some things are a lot more salient to humans than others, just by their visual characteristics (bright colors, sharp contrasts, ...).
@@ -39,6 +50,7 @@ They dump their logs in `--tb_log_dir` (default: outputs/logs) and checkpoints i
 ├── outputs/
 │   ├── checkpoints/: Default directory to save checkpoints in.
 │   └── logs/: Default directory to save TensorBoard logs in.
+├── images/: Examples of the meta-learned model's attention maps.
 ├── scripts/
 │   ├── hyperopt_attention.py: Run hyperparameter optimization with HyperOpt.
 │   ├── run_reptile_experiment.py: Run the meta-training --> evaluation pipeline.
