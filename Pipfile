@@ -12,6 +12,7 @@ tensorboard = "*"
 matplotlib = "*"
 numpy = "*"
 tensorflow = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.6"

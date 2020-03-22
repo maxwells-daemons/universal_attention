@@ -319,3 +319,28 @@ def attending_classifier(
     }
 
     return tf.keras.Model(image, AttendingClassifierOutput(logits, attention))
+
+
+def load_checkpoint(checkpoint: str) -> tf.keras.Model:
+    """
+    Load a complete model checkpoint, including custom layers.
+    Model is not compiled.
+
+    Parameters
+    ----------
+    checkpoint: str
+        Path to the checkpoint.
+
+    Returns
+    -------
+    model: tf.keras.Model
+        The model.
+    """
+    return tf.keras.models.load_model(
+        checkpoint,
+        compile=False,
+        custom_objects={
+            "QueryAttentionEncoder": QueryAttentionEncoder,
+            "BahdanauAttention": BahdanauAttention,
+        },
+    )

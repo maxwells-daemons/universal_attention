@@ -5,7 +5,6 @@ Train and evaluate an encoder checkpoint on the target task.
 """
 
 from absl import app, flags  # type: ignore
-from tensorflow import keras  # type: ignore
 
 from universal_attention import models, train, utils
 
@@ -33,14 +32,7 @@ flags.DEFINE_float("learning_rate", 1e-4, "Learning rate to use.")
 def main(_):
     """Run `train_target.py`."""
     utils.initialize_hardware()
-    model = keras.models.load_model(
-        FLAGS.encoder_checkpoint,
-        compile=False,
-        custom_objects={
-            "QueryAttentionEncoder": models.QueryAttentionEncoder,
-            "BahdanauAttention": models.BahdanauAttention,
-        },
-    )
+    model = models.load_checkpoint(FLAGS.encoder_checkpoint)
     encoder = model.get_layer("query_attention_encoder")
     train.train_target(
         encoder=encoder,
