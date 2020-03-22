@@ -6,6 +6,7 @@ Evaluate a model with attention on zero-shot segmentation.
 
 import pickle
 
+import numpy as np  # type: ignore
 from absl import app, flags  # type: ignore
 
 from universal_attention import data, models, segmentation, utils
@@ -42,13 +43,14 @@ def main(_):
             score = scores[idx]
             print(f"  {name}: {score}")
 
-            if stuff:
-                stuff_tot += score
-            else:
-                notstuff_tot += score
+            if not np.isnan(score):
+                if stuff:
+                    stuff_tot += score
+                else:
+                    notstuff_tot += score
 
-            print(f"  Stuff: {stuff_tot}")
-            print(f"  Not stuff: {notstuff_tot}")
+        print(f"  Stuff: {stuff_tot}")
+        print(f"  Not stuff: {notstuff_tot}")
 
     if FLAGS.save_path:
         with open(FLAGS.save_path, "wb") as out_file:
