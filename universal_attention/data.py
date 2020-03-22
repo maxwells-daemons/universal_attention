@@ -33,8 +33,8 @@ Example = Tuple[tf.Tensor, tf.Tensor]
 PreprocessFunction = Callable[[tf.Tensor, tf.Tensor], Example]
 
 
-class DatasetName(enum.Enum):
-    """Lists the available datasets."""
+class ClassificationDataset(enum.Enum):
+    """Lists the available datasets for classification."""
 
     CALTECH_101 = "caltech101"
     BEANS = "beans"
@@ -46,18 +46,10 @@ class DatasetName(enum.Enum):
 
 
 # Resize all images to the same size because of speed & memory constraints
-IMAGE_SIZES = {
-    DatasetName.CALTECH_101: (128, 128),  # Orig: ~(300, 200)
-    DatasetName.BEANS: (128, 128),  # Orig: (500, 500)
-    DatasetName.CALTECH_BIRDS_2011: (128, 128),  # Orig: ~(300, 500)
-    DatasetName.IMAGENETTE: (128, 128),  # Orig: ~(256, 256)
-    DatasetName.STANFORD_DOGS: (128, 128),  # Orig: ~(300, 500)
-    DatasetName.OXFORD_IIIT_PET: (128, 128),  # Orig: ~(300, 500)
-    DatasetName.OXFORD_FLOWERS102: (128, 128),  # Orig: ~(500, 500)
-}
+IMAGE_SIZE = (128, 128)
 
-TARGET_DATASET = DatasetName.CALTECH_101
-META_DATASETS = [ds for ds in DatasetName if ds != TARGET_DATASET]
+TARGET_DATASET = ClassificationDataset.CALTECH_101
+META_DATASETS = [ds for ds in ClassificationDataset if ds != TARGET_DATASET]
 
 # Dataset loading API
 def load_target_dataset(batch_size: int) -> DatasetAndInfo:
@@ -127,7 +119,9 @@ def _standardize(images: tf.Tensor, labels: tf.Tensor) -> Example:
     return (images - 128) / 128.0, labels
 
 
-def _load_dataset(name: DatasetName, batch_size: int) -> DatasetAndInfo:
+def _load_dataset(
+    name: ClassificationDataset, batch_size: int
+) -> DatasetAndInfo:
     if batch_size <= 0:
         raise ValueError("Batch size must be >= 0.")
 
@@ -140,7 +134,7 @@ def _load_dataset(name: DatasetName, batch_size: int) -> DatasetAndInfo:
     )
 
     def resize_image(image: tf.Tensor, label: tf.Tensor) -> Example:
-        return tf.image.resize(image, IMAGE_SIZES[name]), label
+        return tf.image.resize(image, IMAGE_SIZE), label
 
     splits_processed = {
         key: ds.shuffle(FLAGS.shuffle_buffer_size)
