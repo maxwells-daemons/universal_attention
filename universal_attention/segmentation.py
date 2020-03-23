@@ -2,7 +2,7 @@
 Code for evaluating attention models on zero-shot multiclass segmentation.
 """
 
-from typing import Dict
+from typing import Dict, List
 
 import numpy as np  # type: ignore
 import tensorflow as tf  # type: ignore
@@ -13,7 +13,7 @@ from universal_attention import data
 
 def evaluate_zero_shot(
     model: tf.keras.models.Model, batch_size: int
-) -> Dict[str, np.ndarray]:
+) -> Dict[str, List[np.ndarray]]:
     """
     Evaluate an encoder with attention on zero-shot multiclass segmentation.
 
@@ -26,18 +26,19 @@ def evaluate_zero_shot(
 
     Returns
     -------
-    class_attention: Dict[str, np.ndarray]
-        For each layer, an array where the i-th element is the average attention
-        that layer gives to classes of index i.
+    class_metrics: Dict[str, [np.ndarray, np.ndarray]]
+        For each layer, the total attention and total true count assigned
+        to each class.
     """
     attention_layers = model.output[1].keys()
 
-    class_occurrence: Dict[str, np.ndarray] = {}
-    class_attention_tot: Dict[str, np.ndarray] = {}
-
-    for layer in attention_layers:
-        class_occurrence[layer] = np.zeros(data.SEGMENTATION_CLASSES, dtype=int)
-        class_attention_tot[layer] = np.zeros(data.SEGMENTATION_CLASSES)
+    class_metrics = {
+        layer: [
+            np.zeros(data.SEGMENTATION_CLASSES, dtype=int),
+            np.zeros(data.SEGMENTATION_CLASSES),
+        ]
+        for layer in attention_layers
+    }
 
     splits, _ = data.load_segmentation_dataset(batch_size)
 
@@ -54,16 +55,13 @@ def evaluate_zero_shot(
             attention_ = zoom(attention_, [1, size_ratio, size_ratio])
             attention_flat = np.reshape(attention_, -1) / (size_ratio ** 2)
 
-            class_occurrence[layer] += np.bincount(
+            class_metrics[layer][0] += np.bincount(
                 classes_flat, minlength=data.SEGMENTATION_CLASSES
             )
-            class_attention_tot[layer] += np.bincount(
+            class_metrics[layer][1] += np.bincount(
                 classes_flat,
                 weights=attention_flat,
                 minlength=data.SEGMENTATION_CLASSES,
             )
 
-    return {
-        layer: class_attention_tot[layer] / class_occurrence[layer]
-        for layer in attention_layers
-    }
+    return class_metrics

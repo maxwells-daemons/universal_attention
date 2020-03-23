@@ -33,28 +33,32 @@ def main(_):
     model = models.load_checkpoint(FLAGS.checkpoint)
     results = segmentation.evaluate_zero_shot(model, FLAGS.batch_size)
 
-    print("\nRESULTS\n-------")
-    for layer, scores in results.items():
-        stuff_tot = 0.0
-        notstuff_tot = 0.0
-
-        print(f"{layer}:")
-        for idx, _, _, _, stuff, name in class_info:
-            score = scores[idx]
-            print(f"  {name}: {score}")
-
-            if not np.isnan(score):
-                if stuff:
-                    stuff_tot += score
-                else:
-                    notstuff_tot += score
-
-        print(f"  Stuff: {stuff_tot}")
-        print(f"  Not stuff: {notstuff_tot}")
-
     if FLAGS.save_path:
         with open(FLAGS.save_path, "wb") as out_file:
             pickle.dump(results, out_file)
+
+    print("\nRESULTS\n-------")
+    for layer, (class_count, class_attention) in results.items():
+        stuff_attention = 0.0
+        nonstuff_attention = 0.0
+        stuff_pixels = 0
+        nonstuff_pixels = 0
+
+        print(f"{layer}:")
+        for idx, _, _, _, stuff, name in class_info:
+            attention = class_attention[idx]
+            count = class_count[idx]
+            print(f"  {name}: {attention} / {count}")
+
+            if stuff:
+                stuff_attention += attention
+                stuff_pixels += count
+            else:
+                nonstuff_attention += attention
+                nonstuff_pixels += count
+
+        print(f"  Stuff: {stuff_attention} / {stuff_pixels}")
+        print(f"  Not stuff: {nonstuff_attention} / {nonstuff_pixels}")
 
 
 if __name__ == "__main__":
